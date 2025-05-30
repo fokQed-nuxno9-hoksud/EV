@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資訊圖表：全球電動車出口競爭與比亞迪崛起</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Visualization & Content Choices:
+        - Global Market Size (2019-2023): Goal: Change -> Viz: Bar Chart (Chart.js) -> Justification: Shows magnitude of growth. Data: Report.
+        - Top EV Exporters (2023): Goal: Compare -> Viz: Horizontal Bar Chart (Chart.js) -> Justification: Ranks countries, good for long labels. Data: Table 1.
+        - China EV Export Growth (2018-2023 Value & Volume): Goal: Change -> Viz: Combined Line/Bar Chart (Chart.js) -> Justification: Shows two related trends. Data: Table 2.
+        - China's Rise Drivers: Goal: Organize/Inform -> Viz: HTML/CSS cards + Unicode Icons -> Justification: Digestible info chunks. Data: Report text.
+        - BYD Core Tech: Goal: Organize/Inform -> Viz: HTML/CSS cards + Unicode Icons -> Justification: Highlights key innovations. Data: Report text.
+        - BYD vs Tesla Market Share (2022Q3-2024Q2): Goal: Compare -> Viz: Grouped Bar Chart (Chart.js) -> Justification: Direct competitor comparison. Data: Report table "全球乘用電動汽車市場份額".
+        - BYD Financials: Goal: Inform -> Viz: HTML/CSS "Big Numbers" -> Justification: Quick impact for key stats. Data: Report text (2024 Revenue, Profit Growth).
+        - BYD Global Expansion/Challenges: Goal: Organize/Inform -> Viz: HTML/CSS sections + Unicode Icons -> Justification: Summarizes key strategic points. Data: Report text.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. All charts via Chart.js (Canvas). Diagrams via HTML/CSS.
+    -->
+    <style>
+        body { font-family: 'Inter', 'Noto Sans TC', sans-serif; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; 
+            max-height: 400px;
+        }
+        @media (min-width: 768px) { .chart-container { height: 350px; max-height: 450px;} }
+        .section-title {
+            font-size: 1.75rem; /* text-2xl approx */
+            font-weight: 700;
+            color: #0369a1; /* sky-700 */
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #0ea5e9; /* sky-500 */
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0ea5e9; /* sky-500 */
+        }
+        .stat-label {
+            font-size: 0.875rem;
+            color: #475569; /* slate-600 */
+            margin-top: 0.25rem;
+        }
+        .icon-text-card {
+            background-color: #f0f9ff; /* sky-50 */
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .icon-text-card span { font-size: 1.5rem; }
+        .tech-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            border-left: 4px solid #0ea5e9; /* sky-500 */
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-700">
+
+    <header class="bg-sky-700 text-white py-10 px-4 text-center">
+        <h1 class="text-4xl font-bold mb-2">全球電動車浪潮：市場變革與比亞迪的崛起</h1>
+        <p class="text-lg max-w-3xl mx-auto">深入剖析全球電動車出口的爆炸性增長、中國在此浪潮中的主導地位，以及比亞迪如何憑藉技術創新與全球佈局，引領產業變革。</p>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <section id="global-market-surge" class="mb-16">
+            <h2 class="section-title">全球電動車市場飆升</h2>
+            <p class="text-lg text-slate-600 mb-8">全球電動車貿易正經歷前所未有的擴張，出口額在短短數年內實現了數倍增長，顯示電動車已成為全球汽車貿易的核心驅動力。</p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="stat-card">
+                    <div class="text-6xl font-bold text-sky-600 mb-2">1506億</div>
+                    <div class="text-xl text-slate-700">美元</div>
+                    <p class="text-slate-500 mt-1">2023年全球電動車出口總值</p>
+                    <div class="mt-4 pt-4 border-t">
+                        <p class="text-sm text-slate-600">相較2019年的 <span class="font-semibold text-sky-600">259億美元</span>，五年增長近 <span class="font-semibold text-sky-600">300%</span>。</p>
+                        <p class="text-sm text-slate-600 mt-1">電動車佔汽車出口收入比例從 <span class="font-semibold text-sky-600">3.4%</span> (2019) 升至 <span class="font-semibold text-sky-600">15.7%</span> (2023)。</p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">2023年主要電動車出口國</h3>
+                    <div class="chart-container bg-white p-4 rounded-lg shadow">
+                        <canvas id="topExportersChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2 text-center">資料來源：報告 表1</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="china-dominance" class="mb-16">
+            <h2 class="section-title">中國電動車的驚人崛起</h2>
+            <p class="text-lg text-slate-600 mb-8">中國電動車出口量與價值實現了歷史性飛躍，迅速成為全球市場的主導力量。政府的大力支持、技術的快速迭代以及完整的供應鏈是其成功的關鍵。</p>
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">中國電動車出口增長 (2018-2023)</h3>
+                    <div class="chart-container bg-white p-4 rounded-lg shadow" style="height: 400px;">
+                        <canvas id="chinaExportGrowthChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2 text-center">資料來源：報告 表2 (出口量單位：萬輛)</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-6">中國崛起的關鍵驅動力</h3>
+                    <div class="space-y-4">
+                        <div class="icon-text-card">
+                            <span>🏛️</span>
+                            <div>
+                                <h4 class="font-semibold text-sky-700">政府政策與巨額補貼</h4>
+                                <p class="text-sm text-slate-600">2009-2023年間投入約2300億美元，涵蓋生產補貼、稅收減免等。</p>
+                            </div>
+                        </div>
+                        <div class="icon-text-card">
+                            <span>⚙️</span>
+                            <div>
+                                <h4 class="font-semibold text-sky-700">技術進步與快速迭代</h4>
+                                <p class="text-sm text-slate-600">電池技術領先，新車型推出週期短，專利數量顯著增加。</p>
+                            </div>
+                        </div>
+                        <div class="icon-text-card">
+                            <span>🔗</span>
+                            <div>
+                                <h4 class="font-semibold text-sky-700">成本與供應鏈優勢</h4>
+                                <p class="text-sm text-slate-600">掌控關鍵零部件，製造成本低於西方市場約20%。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mt-6 italic text-slate-500">中國在電動車產業鏈上的「全棧式」掌控，是其實現成本領先和產品快速更新的根本原因。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="byd-leader" class="mb-16">
+            <h2 class="section-title">比亞迪：全球新能源汽車領導者</h2>
+            <p class="text-lg text-slate-600 mb-8">比亞迪憑藉其垂直整合模式、核心技術創新及多元化產品組合，已成為全球新能源汽車市場的銷量冠軍，引領產業變革。</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                <div class="stat-card">
+                    <div class="stat-value text-red-500">302萬+</div>
+                    <p class="stat-label">2023年新能源汽車銷量</p>
+                    <p class="text-xs text-slate-500 mt-1">蟬聯全球銷量冠軍</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value text-red-500">427萬+</div>
+                    <p class="stat-label">2024年汽車交付量</p>
+                    <p class="text-xs text-slate-500 mt-1">同比增長41.3%</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value text-red-500">542億</div>
+                    <p class="stat-label">人民幣</p>
+                    <p class="text-xs text-slate-500 mt-1">2024年研發支出，同比增長36%</p>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-semibold text-slate-800 mb-6 mt-10">核心技術創新</h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                <div class="tech-card">
+                    <h4 class="text-lg font-bold text-sky-600 mb-2">🔋 刀片電池</h4>
+                    <p class="text-sm">革命性LFP電池，極高安全性與成本效益，空間利用率提升50%。</p>
+                </div>
+                <div class="tech-card">
+                    <h4 class="text-lg font-bold text-sky-600 mb-2">⚡ 超級e平台</h4>
+                    <p class="text-sm">全域千伏高壓架構，兆瓦閃充技術，充電5分鐘續航400公里。</p>
+                </div>
+                <div class="tech-card">
+                    <h4 class="text-lg font-bold text-sky-600 mb-2">⚙️ DM-i超級混動</h4>
+                    <p class="text-sm">以電為主，超低油耗 (3.8L/100km虧電)，兼顧純電體驗與續航。</p>
+                </div>
+                <div class="tech-card">
+                    <h4 class="text-lg font-bold text-sky-600 mb-2">🧠 整車智能戰略</h4>
+                    <p class="text-sm">璇璣架構與AI大模型，L2/L3級智能駕駛，普及先進駕駛輔助。</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                 <div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">全球乘用電動車市場份額 (VS 特斯拉)</h3>
+                    <div class="chart-container bg-white p-4 rounded-lg shadow">
+                        <canvas id="marketShareBYDTeslaChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2 text-center">資料來源：報告內「全球乘用電動汽車市場份額」表</p>
+                    <p class="mt-4 text-sm text-slate-600">比亞迪在2023年Q4純電車銷量首超特斯拉，並在整體新能源車銷量上領先。2024年Q2，兩者純電車市佔均達17%。</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4">多元化產品組合</h3>
+                     <div class="bg-white p-6 rounded-lg shadow">
+                        <p class="mb-2">比亞迪產品線覆蓋廣泛，從入門級到高端，滿足不同市場需求：</p>
+                        <ul class="list-disc list-inside text-sm space-y-1 text-slate-600">
+                            <li><strong>王朝系列：</strong>漢、唐、宋、秦、元 (經典與豪華)</li>
+                            <li><strong>海洋系列：</strong>海豹、海豚、海鷗、海獅 (年輕時尚)</li>
+                            <li><strong>高端品牌：</strong>仰望 (百萬級豪華)、方程豹 (專業越野)</li>
+                            <li><strong>商用車：</strong>電動巴士 (全球運營)、卡車、專用車輛</li>
+                            <li><strong>軌道交通：</strong>雲軌、雲巴 (城市交通解決方案)</li>
+                        </ul>
+                        <p class="mt-3 text-xs text-red-600 font-semibold">如秦PLUS DM-i榮耀版起售價僅7.98萬人民幣，極具價格競爭力。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="byd-global-challenges" class="mb-16">
+            <h2 class="section-title">比亞迪的全球雄心與挑戰</h2>
+            <p class="text-lg text-slate-600 mb-8">面對國內產能過剩和國際貿易壁壘，比亞迪加速全球化佈局，同時也需應對激烈的市場競爭和潛在風險。</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-sky-700 mb-4">🌍 全球擴張戰略</h3>
+                    <p class="mb-3 text-sm">目標市場鎖定歐洲、東南亞、拉丁美洲，積極建立海外生產基地：</p>
+                    <ul class="list-none space-y-2 text-sm">
+                        <li class="flex items-center"><span class="text-xl mr-2">🇭🇺</span>匈牙利 (歐洲總部與工廠)</li>
+                        <li class="flex items-center"><span class="text-xl mr-2">🇧🇷</span>巴西 (最大海外出口市場, 設廠)</li>
+                        <li class="flex items-center"><span class="text-xl mr-2">🇹🇭</span>泰國 (東南亞重要生產基地)</li>
+                        <li class="flex items-center"><span class="text-xl mr-2">🇮🇩</span>印尼 (東南亞最大市場, 設廠)</li>
+                        <li class="flex items-center"><span class="text-xl mr-2">🇺🇿</span>烏茲別克斯坦、🇹🇷土耳其、🇰🇭柬埔寨等地亦有佈局。</li>
+                    </ul>
+                    <p class="mt-3 text-xs text-slate-500">本地化生產旨在規避關稅、降低成本、深化市場滲透。</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-red-600 mb-4">⚠️ 行業逆風與挑戰</h3>
+                    <ul class="list-none space-y-3 text-sm">
+                        <li class="flex items-start"><span class="text-lg mr-2 mt-0.5">🏭</span><div><strong>產能過剩：</strong>中國未售電動車達350萬輛，庫存高企。</div></li>
+                        <li class="flex items-start"><span class="text-lg mr-2 mt-0.5">💸</span><div><strong>激烈價格戰：</strong>比亞迪引領降價潮 (10-34%)，侵蝕行業利潤。</div></li>
+                        <li class="flex items-start"><span class="text-lg mr-2 mt-0.5">🚧</span><div><strong>貿易壁壘：</strong>美國徵收100%關稅，歐盟研擬保護措施。</div></li>
+                        <li class="flex items-start"><span class="text-lg mr-2 mt-0.5">📉</span><div><strong>需求放緩：</strong>國內消費者信心不足，全球經濟增長減速。</div></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="future-outlook" class="bg-sky-800 text-white py-12 px-4 rounded-lg shadow-xl">
+            <h2 class="text-3xl font-bold text-center mb-8">未來展望：智能化引領，全球化深化</h2>
+            <div class="max-w-3xl mx-auto text-center">
+                <p class="text-lg mb-6">比亞迪將「整車智能」作為未來核心戰略，計劃投入1000億人民幣佈局前沿智能駕駛技術，發展「璇璣架構」與「璇璣AI大模型」。同時，透過全球本地化生產與銷售網絡的深化，以及持續的品牌建設（如投資汽車文化），比亞迪旨在鞏固其市場領導地位。</p>
+                <p class="text-lg font-semibold">比亞迪所展現的「中國模式」——快速創新、成本效率、垂直整合——正為全球汽車產業樹立新基準，預示著汽車產業將更加注重技術自主和全球適應性。</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-8 text-sm text-slate-500">
+        <p>&copy; 2025 全球電動車市場分析資訊圖表。基於提供之研究報告製作。</p>
+    </footer>
+
+    <script>
+        const chartLabelColor = '#475569'; // slate-600
+        const chartGridColor = '#e2e8f0'; // slate-200
+        const chartTitleColor = '#0f172a'; // slate-900
+
+        const defaultChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: chartLabelColor, font: { size: 10 } }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                              return label.join(' ');
+                            } else {
+                              return label;
+                            }
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: chartLabelColor, font: { size: 10 }, autoSkip: false, maxRotation: 0, minRotation: 0 },
+                    grid: { color: chartGridColor, display: false }
+                },
+                y: {
+                    ticks: { color: chartLabelColor, font: { size: 10 } },
+                    grid: { color: chartGridColor }
+                }
+            }
+        };
+
+        function wrapLabel(str, maxWidth) {
+            if (typeof str !== 'string') return str; // Handle non-string labels
+            if (str.length <= maxWidth) return str;
+            const words = str.split(' ');
+            let currentLine = '';
+            const lines = [];
+            for (const word of words) {
+                if (word.length > maxWidth) { // Handle very long single words
+                    if (currentLine) lines.push(currentLine.trim());
+                    lines.push(word.substring(0, maxWidth) + '...');
+                    currentLine = '';
+                    continue;
+                }
+                if ((currentLine + word).length > maxWidth && currentLine.length > 0) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            if (currentLine) lines.push(currentLine.trim());
+            return lines.length > 0 ? lines : [str]; // Ensure it returns array if modified, else original string
+        }
+        
+        const processLabels = (labels, maxLength = 16) => {
+            return labels.map(label => wrapLabel(label, maxLength));
+        };
+
+        // 1. Top Exporters Chart
+        const topExportersCtx = document.getElementById('topExportersChart').getContext('2d');
+        const topExporterLabels = ['德國', '中國', '南韓', '比利時', '美國', '西班牙', '捷克共和國', '英國', '法國', '義大利'];
+        new Chart(topExportersCtx, {
+            type: 'bar', // Changed to 'bar' for horizontal view
+            data: {
+                labels: processLabels(topExporterLabels, 10), // shorter wrap for y-axis
+                datasets: [{
+                    label: '出口額 (十億美元)',
+                    data: [40.3, 32.2, 13.7, 11.6, 6.7, 5.21, 4.7, 3.7, 3.0, 2.6],
+                    backgroundColor: ['#0ea5e9','#ef4444','#f59e0b','#10b981','#6366f1','#d946ef','#06b6d4','#6b7280','#ec4899','#84cc16'],
+                    borderWidth: 1
+                }]
+            },
+            options: { ...defaultChartOptions, indexAxis: 'y', scales: { 
+                x: {...defaultChartOptions.scales.x, title: {display: true, text: '出口額 (十億美元)', color: chartTitleColor, font: {size: 12}} },
+                y: {...defaultChartOptions.scales.y, grid: {display: false} } 
+            }, plugins: {...defaultChartOptions.plugins, legend: {display: false}} }
+        });
+
+        // 2. China Export Growth Chart
+        const chinaExportGrowthCtx = document.getElementById('chinaExportGrowthChart').getContext('2d');
+        new Chart(chinaExportGrowthCtx, {
+            type: 'bar',
+            data: {
+                labels: ['2018', '2019', '2020', '2021', '2022', '2023'],
+                datasets: [
+                    {
+                        label: '出口額 (十億美元)',
+                        data: [0.295, 0.89, 0.99, 3.04, 24.13, 36.7],
+                        backgroundColor: '#0ea5e9', // sky-500
+                        yAxisID: 'y-value',
+                        order: 2
+                    },
+                    {
+                        label: '出口量 (萬輛)',
+                        data: [16, 23, 25, 56, 99, 160], // Report table has 160000 for 2018, 1600000 for 2023. Assuming 万辆 is 10k unit.
+                        borderColor: '#ef4444', // red-500
+                        backgroundColor: 'transparent',
+                        type: 'line',
+                        yAxisID: 'y-volume',
+                        tension: 0.1,
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                ...defaultChartOptions,
+                scales: {
+                    x: defaultChartOptions.scales.x,
+                    'y-value': {
+                        type: 'linear', position: 'left', beginAtZero: true,
+                        title: { display: true, text: '出口額 (十億美元)', color: chartTitleColor, font: {size: 12}},
+                        ticks: { color: chartLabelColor, font: {size: 10} },
+                        grid: { color: chartGridColor }
+                    },
+                    'y-volume': {
+                        type: 'linear', position: 'right', beginAtZero: true,
+                        title: { display: true, text: '出口量 (萬輛)', color: chartTitleColor, font: {size: 12}},
+                        grid: { drawOnChartArea: false },
+                        ticks: { color: chartLabelColor, font: {size: 10} }
+                    }
+                }
+            }
+        });
+
+        // 3. Market Share BYD vs Tesla Chart
+        const marketShareBYDTeslaCtx = document.getElementById('marketShareBYDTeslaChart').getContext('2d');
+        const marketShareLabels = ['2022 Q3', '2023 Q3', '2024 Q2'];
+        new Chart(marketShareBYDTeslaCtx, {
+            type: 'bar',
+            data: {
+                labels: processLabels(marketShareLabels),
+                datasets: [
+                    {
+                        label: 'Tesla (%)',
+                        data: [17, 17, 17],
+                        backgroundColor: '#0ea5e9', // sky-500
+                        borderColor: '#0284c7', // sky-600
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'BYD Auto (%)',
+                        data: [13, 17, 17],
+                        backgroundColor: '#ef4444', // red-500
+                        borderColor: '#dc2626', // red-600
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: { ...defaultChartOptions, scales: {
+                x: defaultChartOptions.scales.x,
+                y: {...defaultChartOptions.scales.y, title: {display: true, text: '市場份額 (%)', color: chartTitleColor, font: {size: 12}} }
+            }}
+        });
+
+    </script>
+</body>
+</html>
